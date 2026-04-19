@@ -1,2 +1,8 @@
 # Byte compiled Python
 __pycache__/
+
+build/
+install/
+log/
+
+.vscode/
