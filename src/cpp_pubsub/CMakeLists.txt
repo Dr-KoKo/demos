@@ -20,6 +20,13 @@ install(TARGETS
   talker
   DESTINATION lib/${PROJECT_NAME})
 
+add_executable(listener src/subscriber_lambda_function.cpp)
+target_link_libraries(listener PUBLIC rclcpp::rclcpp ${std_msgs_TARGETS})
+
+install(TARGETS
+talker
+listener
+DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
