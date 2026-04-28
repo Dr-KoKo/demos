@@ -11,17 +11,13 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(tutorial_interfaces REQUIRED)
 
 add_executable(talker src/publisher_lambda_function.cpp)
-target_link_libraries(talker PUBLIC rclcpp::rclcpp ${std_msgs_TARGETS})
-
-install(TARGETS
-  talker
-  DESTINATION lib/${PROJECT_NAME})
+target_link_libraries(talker PUBLIC rclcpp::rclcpp ${tutorial_interfaces_TARGETS})
 
 add_executable(listener src/subscriber_lambda_function.cpp)
-target_link_libraries(listener PUBLIC rclcpp::rclcpp ${std_msgs_TARGETS})
+target_link_libraries(listener PUBLIC rclcpp::rclcpp ${tutorial_interfaces_TARGETS})
 
 install(TARGETS
 talker
