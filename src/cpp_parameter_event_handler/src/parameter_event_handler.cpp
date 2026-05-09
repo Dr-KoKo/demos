@@ -9,6 +9,7 @@ public:
   : Node("node_with_parameters")
   {
     this->declare_parameter("an_int_param", 0);
+    this->declare_parameter("another_double_param", 0.0);
 
     // Create a parameter subscriber that can be used to monitor parameter changes
     // (for this node's parameters as well as other nodes' parameters)
@@ -36,12 +37,27 @@ public:
     auto remote_node_name = std::string("parameter_blackboard");
     auto remote_param_name = std::string("a_double_param");
     cb_handle2_ = param_subscriber_->add_parameter_callback(remote_param_name, cb2, remote_node_name);
+
+    auto event_cb = [this](const rcl_interfaces::msg::ParameterEvent & parameter_event) {
+        RCLCPP_INFO(
+          this->get_logger(), "Received parameter event from node \"%s\"",
+          parameter_event.node.c_str());
+
+        for (const auto& p : parameter_event.changed_parameters) {
+          RCLCPP_INFO(
+            this->get_logger(), "Inside event: \"%s\" changed to %s",
+            p.name.c_str(),
+            rclcpp::Parameter::from_parameter_msg(p).value_to_string().c_str());
+        };
+      };
+    event_cb_handle_ = param_subscriber_->add_parameter_event_callback(event_cb);
   }
 
 private:
   std::shared_ptr<rclcpp::ParameterEventHandler> param_subscriber_;
   std::shared_ptr<rclcpp::ParameterCallbackHandle> cb_handle_;
   std::shared_ptr<rclcpp::ParameterCallbackHandle> cb_handle2_;
+  std::shared_ptr<rclcpp::ParameterEventCallbackHandle> event_cb_handle_;
 };
 
 int main(int argc, char ** argv)
